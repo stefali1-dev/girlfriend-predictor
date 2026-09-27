@@ -117,6 +117,8 @@ def main():
         f"{len(test):,} rows, {test['person_id'].nunique():,} people never seen in training. "
         "Unweighted (survey weights not used). Lower is better except ROC-AUC. "
         "calib_error: mean gap between predicted and observed rate over 10 equal-size bins.\n\n"
+        "Second opening of the test set: a re-report after a data fix (hours_worked above "
+        "8,760 set to missing), with no changes to the model code or settings.\n\n"
         "## All models\n\n" + markdown(pd.DataFrame(overall)) + "\n\n"
         "## Final stack by sex\n\n" + markdown(pd.DataFrame(by_sex)) + "\n\n"
         "## Final stack by age band\n\n" + markdown(pd.DataFrame(by_age)) + "\n\n"

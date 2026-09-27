@@ -160,7 +160,8 @@ def main():
             weeks[asked] = num(cols, f"CVC_WKSWK_YR_ALL_{int(yy):02d}_XRND")
             hours[asked] = num(cols, f"CVC_HOURS_WK_YR_ALL_{int(yy):02d}_XRND")
         part["weeks_worked"] = weeks
-        part["hours_worked"] = hours
+        # a year has 8,760 hours; a few reported totals exceed it (up to 17,276)
+        part["hours_worked"] = hours.where(hours <= 8760)
         part["employed"] = weeks.gt(0).map({True: 1.0, False: 0.0}).where(weeks.notna())
 
         # carried forward from every round, including before age 18

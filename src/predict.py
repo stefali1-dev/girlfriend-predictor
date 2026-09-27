@@ -30,18 +30,26 @@ def predict_proba(model, people):
 
 def person_row(model, person):
     """Check the JSON fields and turn them into a one-row table with every feature column."""
-    if "age" not in person:
-        sys.exit("age is required: it drives most of the prediction")
     unknown = set(person) - set(model["features"])
     if unknown:
         sys.exit(f"unknown fields {sorted(unknown)}; allowed: {model['features']}")
+    # A JSON null means "unknown", exactly like leaving the field out.
+    person = {col: value for col, value in person.items() if value is not None}
+    if "age" not in person:
+        sys.exit("age is required: it drives most of the prediction")
+
+    categorical = list(model["categories"])
+    numeric = [col for col in model["features"] if col not in categorical]
     for col, allowed in model["categories"].items():
         if col in person and person[col] not in allowed:
             sys.exit(f"{col} must be one of {allowed}, got {person[col]!r}")
+    for col in numeric:
+        if col in person and not isinstance(person[col], (int, float)):
+            sys.exit(f"{col} must be a number, got {person[col]!r}")
 
     row = pd.DataFrame([person]).reindex(columns=model["features"])
-    categorical = list(model["categories"])
-    numeric = [col for col in model["features"] if col not in categorical]
+    # Missing categories must stay NaN (not the text "nan") so the pipelines impute them as in
+    # training; pandas 3 keeps NaN through astype("str"), pandas 2 would not.
     row[categorical] = row[categorical].astype("str")
     row[numeric] = row[numeric].astype(float)
     return row
