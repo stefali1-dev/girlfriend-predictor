@@ -21,7 +21,9 @@ def download(year: int, letter: str, file: str) -> Path:
         return dest
     url = BASE_URL.format(year=year, file=file, letter=letter)
     print(f"downloading {url}")
-    urllib.request.urlretrieve(url, dest)
+    tmp = dest.with_suffix(".part")
+    urllib.request.urlretrieve(url, tmp)
+    tmp.rename(dest)
     return dest
 
 

@@ -20,7 +20,9 @@ def download(name: str, url: str) -> None:
         print(f"skip {dest.name} (already downloaded)")
         return
     print(f"downloading {url}")
-    urllib.request.urlretrieve(url, dest)
+    tmp = dest.with_suffix(".part")
+    urllib.request.urlretrieve(url, tmp)
+    tmp.rename(dest)
 
 
 if __name__ == "__main__":
