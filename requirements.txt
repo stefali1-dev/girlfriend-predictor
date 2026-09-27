@@ -6,4 +6,5 @@ catboost==1.2.10
 tabpfn==9.0.0
 shap==0.52.0
 matplotlib==3.11.2
+pytest==9.1.1
 jupyterlab==4.6.4
