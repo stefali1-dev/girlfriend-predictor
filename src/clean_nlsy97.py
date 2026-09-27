@@ -20,6 +20,7 @@ OUT = Path("data/clean/nlsy97.parquet")
 
 # NLSY97 interviews were annual 1997-2011, biennial after.
 ROUNDS = list(range(1997, 2012)) + [2013, 2015, 2017, 2019, 2021, 2023]
+ROUND_NUM = {year: i + 1 for i, year in enumerate(ROUNDS)}
 MISSING = [-1, -2, -3, -4, -5]  # refused, don't know, invalid skip, valid skip, non-interview
 
 # Midpoints of the show-card brackets, in dollars (asked when the exact amount
@@ -112,6 +113,7 @@ def main():
         age = num(cols, f"CV_AGE_INT_DATE_{y}")
         keep = marstat.isin(range(1, 11)) & age.ge(18)
         part = pd.DataFrame(index=marstat[keep].index)
+        part["round"] = ROUND_NUM[y]
         # fieldwork can spill into the next calendar year; the actual year matters
         # for the calendar-year work variables below
         part["year"] = num(cols, f"CV_INTERVIEW_DATE_Y_{y}").fillna(y)
@@ -232,7 +234,7 @@ def main():
         long[f"big5_{trait}"] = long[f"big5_{trait}"].where(long["year"] >= 2008)
 
     columns = [
-        "person_id", "source", "year", "weight", "age", "sex", "race_ethnicity",
+        "person_id", "source", "year", "round", "weight", "age", "sex", "race_ethnicity",
         "education", "employed", "height_cm", "bmi", "partnered",
         "earnings", "weeks_worked", "hours_worked", "enrolled", "census_region",
         "urban", "msa", "general_health", "asvab_percentile", "mother_educ_grade",
@@ -245,6 +247,9 @@ def main():
     long = long[columns].reset_index(drop=True)
     long["year"] = long["year"].astype(int)
     long["age"] = long["age"].astype(int)
+    long["round"] = long["round"].astype(np.int8)
+    # person_id x round is the key the "partnered 2 years later" step will join on
+    assert not long.duplicated(["person_id", "round"]).any()
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     long.to_parquet(OUT, index=False)
