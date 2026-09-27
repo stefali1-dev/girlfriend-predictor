@@ -49,11 +49,14 @@ def religion_map(coding):
 
 
 # Current-religion codings differ by era; collapsed to a stable small set.
+# Mormon, Unitarian, Quaker, Jehovah's Witness and Seventh Day Adventist are
+# "other" in every era (each era codes them differently, sometimes not at all).
 RELIGION_1997 = religion_map({"catholic": [1], "protestant": list(range(2, 14)),
                               "jewish": list(range(14, 18)), "none": [25, 26, 27]})
-RELIGION_2005 = religion_map({"catholic": [1], "protestant": list(range(2, 14)) + [31, 32],
+RELIGION_2005 = religion_map({"catholic": [1], "protestant": list(range(2, 14)),
                               "jewish": list(range(14, 18)), "none": [25, 26, 27]})
-RELIGION_2017 = religion_map({"catholic": [101], "protestant": list(range(103, 113)),
+RELIGION_2017 = religion_map({"catholic": [101],
+                              "protestant": [103, 104, 105, 106, 107, 111, 112],
                               "jewish": [102], "none": [116]})
 # every other valid code in each era (other religions, other-specify) -> "other"
 
@@ -141,11 +144,9 @@ def main():
         part["general_health"] = num(cols, f"YHEA_100_{y}")  # 1 excellent .. 5 poor
 
         # own earnings in the year before the interview: exact amount, else bracket midpoint
-        wages_exact = num(cols, f"YINC_1700_{y}")
-        wages = wages_exact.where(wages_exact >= 0).fillna(
+        wages = num(cols, f"YINC_1700_{y}").fillna(
             num(cols, f"YINC_1800_{y}").map(WAGE_BRACKETS))
-        biz_exact = num(cols, f"YINC_2100_{y}")  # negative = business loss
-        biz = biz_exact.where((biz_exact >= 0) | (biz_exact <= -100))
+        biz = num(cols, f"YINC_2100_{y}")  # negative = business loss
         biz = biz.fillna(num(cols, f"YINC_2000_{y}").eq(0).map({True: 0.0}))  # answered "no business income"
         biz = biz.fillna(num(cols, f"YINC_2200_{y}").map(BIZ_BRACKETS))  # bracket 1 "lost money" has no amount
         part["earnings"] = wages + biz
@@ -202,8 +203,8 @@ def main():
         # non-resident biological children: all-ages count to 2017, under-18 after
         nr_name = f"CV_BIO_CHILD_NR_{y}" if f"CV_BIO_CHILD_NR_{y}" in cols else f"CV_BIO_CHILD_NR_U18_{y}"
         raw = cols[nr_name]
-        # -4 valid skip = no biological child ever reported
-        part["nonresident_children"] = raw.where(raw.isin(MISSING), raw.replace(-4, 0)).astype(float)[keep]
+        # -4 valid skip = no biological child ever reported; other negatives stay missing
+        part["nonresident_children"] = raw.replace(-4, 0).mask(raw.isin([-1, -2, -3, -5])).astype(float)[keep]
 
         part["_round"] = y
         rounds.append(part)
@@ -228,10 +229,10 @@ def main():
     long.insert(0, "person_id", "nlsy97-" + long.index.astype(str))
     long.insert(1, "source", "nlsy97")
 
-    # TIPI was measured in 2008; earlier rounds must not use it
+    # TIPI was measured in round 12 (2008); earlier rounds must not use it
     for trait in ["extraversion", "agreeableness", "conscientiousness",
                   "emotional_stability", "openness"]:
-        long[f"big5_{trait}"] = long[f"big5_{trait}"].where(long["year"] >= 2008)
+        long[f"big5_{trait}"] = long[f"big5_{trait}"].where(long["round"] >= ROUND_NUM[2008])
 
     columns = [
         "person_id", "source", "year", "round", "weight", "age", "sex", "race_ethnicity",
