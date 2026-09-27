@@ -157,8 +157,8 @@ def main():
         hours = pd.Series(np.nan, index=part.index)
         for yy in ((part["year"] - 1) % 100).unique():
             asked = ((part["year"] - 1) % 100 == yy)
-            weeks[asked] = num(cols, f"CVC_WKSWK_YR_ALL_{int(yy):02d}_XRND")[asked.index]
-            hours[asked] = num(cols, f"CVC_HOURS_WK_YR_ALL_{int(yy):02d}_XRND")[asked.index]
+            weeks[asked] = num(cols, f"CVC_WKSWK_YR_ALL_{int(yy):02d}_XRND")
+            hours[asked] = num(cols, f"CVC_HOURS_WK_YR_ALL_{int(yy):02d}_XRND")
         part["weeks_worked"] = weeks
         part["hours_worked"] = hours
         part["employed"] = weeks.gt(0).map({True: 1.0, False: 0.0}).where(weeks.notna())
@@ -206,7 +206,7 @@ def main():
         # -4 valid skip = no biological child ever reported; other negatives stay missing
         part["nonresident_children"] = raw.replace(-4, 0).mask(raw.isin([-1, -2, -3, -5])).astype(float)[keep]
 
-        part["_round"] = y
+        part["_year_key"] = y  # the round's nominal calendar year, internal join key
         rounds.append(part)
 
     long = pd.concat(rounds)
@@ -215,14 +215,17 @@ def main():
     # then bring each kept row the value that was latest at its round
     carried_names = ["religion", "attendance_worship", "importance_faith", "height_cm", "weight_kg"]
     carried = pd.concat(carried_rounds)
-    carried["_round"] = [y for y in ROUNDS for _ in range(len(everyone))]
+    carried["_year_key"] = [y for y in ROUNDS for _ in range(len(everyone))]
     carried = carried.sort_index(kind="stable")
     carried[carried_names] = carried.groupby(level=0, sort=False)[carried_names].ffill()
-    carried = carried.reset_index().set_index(["R0000100", "_round"])
-    key = pd.MultiIndex.from_arrays([long.index, long["_round"]])
+    carried = carried.reset_index().set_index(["R0000100", "_year_key"])
+    key = pd.MultiIndex.from_arrays([long.index, long["_year_key"]])
     for name in carried_names:
         long[name] = carried[name].reindex(key).to_numpy()
     long["bmi"] = long["weight_kg"] / (long["height_cm"] / 100) ** 2
+    # independent height/weight bounds can still combine into an implausible BMI
+    implausible = long["bmi"].notna() & ~long["bmi"].between(13, 60)
+    long.loc[implausible, ["bmi", "height_cm", "weight_kg"]] = np.nan
 
     for name, s in person.items():
         long[name] = s.reindex(long.index)
