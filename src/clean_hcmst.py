@@ -43,6 +43,7 @@ df = pd.read_stata(RAW, columns=[
 # partnership / in unmarried noncohab partnership / unpartnered. Derived by
 # Stanford from the S1/S2/S3 screens and "are you currently living with partner".
 status = df.w1_partnership_status_cohab
+partnered = status.isin(["married", "in unmarried cohab partnership"])
 
 out = pd.DataFrame({
     "person_id": "hcmst-" + df.caseid_new.astype(str),
@@ -55,11 +56,9 @@ out = pd.DataFrame({
     "employed": df.w1_ppwork.isin(["Working - as a paid employee", "Working - self-employed"]).astype(int),
     "height_cm": float("nan"),
     "bmi": float("nan"),
-    "partnered": status.isin(["married", "in unmarried cohab partnership"]).astype(int),
+    "partnered": partnered.astype(int),
     "weight": df.w1_weight_combo,
-    "any_partner": status.isin(
-        ["married", "in unmarried cohab partnership", "in unmarried noncohab partnership"]
-    ).astype(int),
+    "any_partner": (partnered | status.eq("in unmarried noncohab partnership")).astype(int),
 })
 out.to_parquet(OUT, index=False)
 

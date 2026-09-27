@@ -30,10 +30,11 @@ def clean_cycle(letter):
     df["marital"] = demo["DMDMARTZ"] if letter == "L" else demo["DMDMARTL"]
     df = df.merge(bmx, on="SEQN", how="left").merge(ocq, on="SEQN", how="left")
 
-    df = df[(df.RIDAGEYR >= 18) & df.marital.notna()]
+    df = df[df.RIDAGEYR >= 18]
     # DMDMARTL: 1 married, 2 widowed, 3 divorced, 4 separated, 5 never married,
     # 6 living with partner. DMDMARTZ: 1 married/living with partner,
-    # 2 widowed/divorced/separated, 3 never married.
+    # 2 widowed/divorced/separated, 3 never married. isin also drops
+    # NaN/refused/don't know, i.e. keeps only people with known marital status.
     partnered_codes = {1} if letter == "L" else {1, 6}
     known_codes = {1, 2, 3} if letter == "L" else {1, 2, 3, 4, 5, 6}
     df = df[df.marital.isin(known_codes)]
