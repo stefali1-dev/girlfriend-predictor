@@ -6,8 +6,8 @@ scores in [metrics.md](metrics.md).
 
 ## What this is, in five lines
 
-- **Who:** Americans born 1980-84, interviewed almost every year from 1997 to 2023 (the NLSY97
-  survey). The model learned from 7,080 of them; one row per person per interview, ages 18 to 43.
+- **Who:** Americans born 1980-84, interviewed every year from 1997 to 2011 and every two years
+  after that, up to 2023 (the NLSY97 survey). The model learned from 7,080 of them; one row per person per interview, ages 18 to 43.
 - **"Partnered"** means married or living together. A boyfriend or girlfriend you don't live with
   counts as single here.
 - **The model** guesses the chance that a person is partnered from about 28 facts about them. On
@@ -27,8 +27,10 @@ scores in [metrics.md](metrics.md).
   who are otherwise alike, how different are the chances?*
 - **Stable or not.** The model was retrained five times, each time on a different 80% of the
   people. A finding is called **stable** only when all five versions agree on its direction. The
-  range in brackets, e.g. (+10 to +12), is what those five versions said. Below 1 pp a finding
-  is called **small** and not worth acting on.
+  range in brackets, e.g. (+10 to +12), is what those five versions said. The main model's own
+  number can land just outside that range, because it learned from all the people, not 80%.
+- **Small and modest.** Below 1 pp a finding is called **small** and not worth acting on.
+  Stable findings between 1 and about 2 pp are called **modest**: real, but minor.
 
 ## The big picture
 
@@ -64,8 +66,10 @@ orange women; the shaded band is the spread across the five retrained versions.*
 - For women it depends on age: **+9.5 pp at 18-24**, but **−2 to −3 pp from 25 on** (stable).
   For a typical 30-year-old woman: 82% → 76%.
 - Weeks worked alone, with the pay kept the same, barely matters for men (+0.1 pp, small): the job
-  shows up through the pay and hours. Men working about 2,080 hours a year instead of 1,000:
-  **+3.3 pp** (stable). For women, more hours: no difference (−0.1 pp).
+  shows up through the pay and hours. For women, working all 52 weeks instead of none, pay kept the
+  same, goes with **−2.4 pp** (stable), the same backwards pattern as below. Men working about
+  2,080 hours a year instead of 1,000: **+3.3 pp** (stable). For women, more hours: no difference
+  (−0.1 pp).
 - **Direction:** for men, probably both ways. Research agrees that a steady job makes a man more
   likely to marry, and married men also work more. For women after 25 it is **likely backwards**:
   partnered women, especially mothers, more often cut back or stop working.
@@ -75,9 +79,12 @@ orange women; the shaded band is the spread across the five retrained versions.*
 - The gap holds at every age: men +10 to +12 pp in each age band, women +2.5 to +4 pp.
 - For a typical 30-year-old man: 69% → 80%. For a typical 30-year-old woman: 76% → 78%.
 - The curve for men rises fastest up to about $45k and then slows.
-- **Direction:** both ways. Earning well helps a man find and keep a partner, and married men earn
-  more (the "marriage premium": they work more, and partners support careers). This model cannot
-  split the two.
+- **Direction:** both ways, mostly backwards. Earning well helps a man find and keep a partner,
+  and married men earn more (the "marriage premium": they work more, and partners support
+  careers). The 2-years-later model ([forecast.md](forecast.md)), which only uses facts from
+  before, sees a much smaller earnings gap among singles finding a partner (6 pp from low to high
+  earnings, against 15 pp for "partnered now" at the same ages): money marks *having* a partner
+  more than it drives *getting* one.
 
 ### 4. Student years and college: a delay, not a "no"
 - Being enrolled in school or college right now, compared with not enrolled: **−4 to −6 pp for
@@ -85,8 +92,12 @@ orange women; the shaded band is the spread across the five retrained versions.*
 - A bachelor's degree instead of high school only: **−4 to −6 pp at ages 18-29**, but
   **+2.5 pp for men and +4.7 pp for women at 35-43** (stable; for men at 30-34 it is 0).
 - A mother with 16 years of school instead of 12: **−4.5 pp for men, −2 pp for women** (stable).
-- **Direction:** mostly timing. Graduates and children of educated parents partner later, then
-  catch up and overtake. The model only sees people up to 43, so it cannot say how the story ends.
+- **Direction:** mostly timing. Graduates partner later, then catch up and overtake. Children of
+  educated parents also partner later; whether they catch up was not measured. The
+  2-years-later model agrees that school shifts *when* people partner more than *whether*: being
+  a student separates people by 11 pp for "partnered now" but only 5 pp for finding a partner
+  ([forecast.md](forecast.md)). The model only sees people up to 43, so it cannot say how the
+  story ends.
 
 ![Same change at different ages](figures/interactions.png)
 
@@ -115,18 +126,19 @@ On a 1-7 scale, going from 3 to 6:
 - **Direction:** both ways. Religious communities encourage marriage and introduce people, and
   couples (especially with children) start going to church again.
 
-### 7. Body: weight is likely backwards; height is small
+### 7. Body: weight is likely backwards; height is modest
 - BMI 22 → 32: **+4.8 pp men, +3.8 pp women** (stable). The chance rises until a BMI of about 30
   and is flat after.
 - **Direction: likely backwards.** People put on weight after settling down (shared meals, less
-  dating, children). This does not mean being heavier helps.
-- Height for men, 170 → 185 cm: **+1.2 pp** on average (stable but small); for a typical
+  dating, children). This does not mean being heavier helps: among singles, a high BMI goes with a
+  slightly *lower* chance of finding a partner within 2 years (−2.0 pp below the average single, [forecast.md](forecast.md)).
+- Height for men, 170 → 185 cm: **+1.2 pp** on average (stable, modest); for a typical
   30-year-old man +2.6 pp (71% → 74%). Most of the gain comes between 175 and 180 cm.
 - Height for women, 157 → 170 cm: −0.9 pp (small).
 - Health from "excellent" to "fair": **−1.3 pp for women** (stable), −0.5 pp for men (small).
   The chance drops faster at "poor".
 - **Direction of height:** height can't be caused by a partner, so this is the one body fact
-  that could be cause, and it's small.
+  that could be cause, and it's modest.
 
 ### 8. Place: cities and the Northeast have more single people
 - Living in an urban area instead of a rural one: **−1.8 pp men, −3.2 pp women** (stable).
@@ -144,10 +156,13 @@ On a 1-7 scale, going from 3 to 6:
 - For a typical 30-year-old: men 74% → 67%, women 76% → 70%.
 - **Direction: mostly backwards.** A child living with the other parent usually means the
   relationship with that parent ended. It shows who is currently between relationships, not that
-  children scare partners off.
+  children scare partners off: among singles, those with a child living elsewhere are *more*
+  likely to find a partner within 2 years (+6.6 pp above the average single,
+  [forecast.md](forecast.md)).
 
 ### 10. Race: a large gap that is about marriage markets, not about the person
-- Black instead of white/other, with everything else the same: **−9.6 pp for men and −26 pp for
+- Black instead of other races (mostly white, also Asian, Native American and mixed race), with
+  everything else the same: **−9.6 pp for men and −26 pp for
   women** (stable). Hispanic: −1.7 pp men, −1.6 pp women.
 - This is the second-strongest fact in the model and the one most different between the sexes.
 - **Direction:** not something a person causes. Research links it to the local pool of partners
@@ -155,10 +170,11 @@ On a 1-7 scale, going from 3 to 6:
   from incarceration and unemployment), and to people marrying mostly within their own group. This
   data cannot test those explanations.
 
-### Smaller or unstable findings (don't lean on these)
-- Test scores (ASVAB, 25th → 75th percentile): +1.1 pp men, +2.1 pp women. Stable but small.
-- Lived with both parents at 12: −1.2 pp for men (stable, surprising, small), −0.3 pp for women.
-- Father's education 12 → 16 years: −1.1 pp men, −1.3 pp women (stable, small).
+### Modest, small or unstable findings (don't lean on these)
+- Test scores (ASVAB, 25th → 75th percentile): +1.1 pp men, +2.1 pp women (stable, modest).
+- Lived with both parents at 12: −1.2 pp for men (stable, modest, surprising), −0.3 pp for women
+  (small).
+- Father's education 12 → 16 years: −1.1 pp men, −1.3 pp women (stable, modest).
 - Family income in 1997, height for women, agreeableness, openness, importance of faith:
   under 1 pp.
 - Metro area "not known", and "other religion" for women: the five versions disagree on the
@@ -176,7 +192,7 @@ of men and 62% of women are partnered).
 | person | change | chance before → after | in points (5 versions) |
 |---|---|---|---|
 | man, 30 | earnings $20k → $60k | 69% → 80% | +10.9 (+9.9 to +11.8) |
-| woman, 30 | earnings $20k → $60k | 76% → 78% | +1.6 (+1.8 to +3.2) |
+| woman, 30 | earnings $20k → $60k | 76% → 78% | +1.6 (+1.8 to +3.2)¹ |
 | man, 30 | no job → full-time at $40k | 55% → 76% | +21.6 (+20.1 to +24.5) |
 | woman, 30 | no job → full-time at $40k | 82% → 76% | −5.9 (−6.0 to −4.3) |
 | man, 30 | high school → bachelor's | 75% → 74% | −1.2 (−3.6 to −0.2) |
@@ -187,6 +203,8 @@ of men and 62% of women are partnered).
 | woman, 28 | worship never → weekly | 74% → 76% | +1.9 (+1.1 to +3.4) |
 | man, 30 | no → one child living elsewhere | 74% → 67% | −6.3 (−7.8 to −4.4) |
 | woman, 30 | no → one child living elsewhere | 76% → 70% | −6.5 (−6.8 to −4.6) |
+
+¹ The main model's number sits just below the five versions' range; see "How to read the numbers".
 
 Caveats that apply to every row: these are the model's guesses for a person who does not exist,
 not a forecast for you. A single typical person can land on a quirk of the model, so the averages
@@ -215,10 +233,13 @@ and child rows are most likely the partner causing the fact, not the other way r
 ## What this data can't tell you
 
 - **What causes what.** Every finding here is a link measured at the same moment. A job, a
-  partner, weight and church going all influence each other. The planned "2 years later" model
-  (people single now: who is partnered two years on?) gets closer to cause, and is not done yet.
-- **Girlfriends and boyfriends you don't live with.** Those count as single here, so the numbers
-  are about living together or marriage, not about dating success.
+  partner, weight and church going all influence each other. The 2-years-later model
+  ([forecast.md](forecast.md): people single now, who has a partner two years on?) gets closer to
+  cause, and is quoted above where it backs a direction.
+- **Girlfriends and boyfriends you don't live with.** "Partnered" here means married or living
+  together, not "in a relationship". In another survey (HCMST 2017), 46% of the 18-43-year-olds
+  this definition calls single had a partner they don't live with: 60% of women, 32% of men
+  ([outside_check.md](outside_check.md)).
 - **Attraction, dating apps, how people meet, or how happy couples are.** None of that is in the
   data.
 - **People born outside 1980-84, older than 43, or outside the US.** Younger generations partner

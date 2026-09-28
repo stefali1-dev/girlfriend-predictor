@@ -260,23 +260,13 @@ def main():
         + markdown(pd.DataFrame(interaction_rows)))
     interactions_plot(interaction_cells, FIGURES / "interactions.png")
 
-    pipe = model["base"]["catboost"]
-    Xt = pipe[:-1].transform(train[FEATURES])
-    pairs = pipe[-1].get_feature_importance(Pool(Xt, cat_features=CATEGORICAL), type="Interaction")[:12]
-    pair_table = pd.DataFrame([{"feature 1": Xt.columns[int(a)], "feature 2": Xt.columns[int(b)],
-                                "strength": round(s, 2)} for a, b, s in pairs])
-    sections.append(
-        "## Strongest pairwise interactions inside CatBoost\n\n"
-        "CatBoost's own interaction score (how much two features' splits depend on each other; "
-        "relative units, the scores sum to 100 over all pairs). A pointer for where to look, "
-        "not an effect size.\n\n" + markdown(pair_table))
-
     print("same-person examples ...", flush=True)
     sections.append(
         "## Same person, one thing changed\n\n"
         "The typical person: for numbers, the median of train-set people of that sex aged within "
         "a year of the stated age; for categories, the most common value. Then one feature is set "
-        "to 'from' and then 'to'. Probabilities from the final model; change as above.\n\n"
+        "to 'from' and then 'to'. Probabilities from the final model; change as above. "
+        "'The rest of this person' leaves out what the row changes.\n\n"
         + markdown(examples_table(models, train)))
 
     OUT.write_text("# Explanation numbers (written by src/explain.py)\n\n"
@@ -293,20 +283,28 @@ def typical_person(train, sex, age):
     return pd.DataFrame([{**person, "age": age}])
 
 
+# How the typical person is described; the features a row changes are left out.
+BACKGROUND = {
+    "race_ethnicity": "race {}", "education": "{}", "religion": "{}", "census_region": "{}",
+    "earnings": "earns ${:,.0f}", "weeks_worked": "{:.0f} weeks", "height_cm": "{:.0f} cm",
+    "bmi": "BMI {:.1f}", "attendance_worship": "attendance {:.0f}",
+    "nonresident_children": "{:.0f} children living elsewhere",
+}
+
+
 def examples_table(models, train):
     rows = []
     for sex, age, name in EXAMPLES:
         person = typical_person(train, sex, age)
         ends = curves(models, person, CHANGES[name])
         p = person.iloc[0]
+        changed = CHANGES[name][0]
         rows.append({
             "person": f"{sex}, {age}", "change": name,
             "probability from → to": f"{ends[0, 0]:.3f} → {ends[0, 1]:.3f}",
             "change, points": effect_cell(ends[:, 1] - ends[:, 0]),
-            "the rest of this person": (f"race {p['race_ethnicity']}, {p['education']}, {p['religion']}, {p['census_region']}, "
-                                        f"earns ${p['earnings']:,.0f}, {p['weeks_worked']:.0f} weeks, "
-                                        f"{p['height_cm']:.0f} cm, BMI {p['bmi']:.1f}, "
-                                        f"attendance {p['attendance_worship']:.0f}"),
+            "the rest of this person": ", ".join(
+                text.format(p[col]) for col, text in BACKGROUND.items() if col not in changed),
         })
     return pd.DataFrame(rows)
 

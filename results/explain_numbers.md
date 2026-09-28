@@ -164,40 +164,21 @@ Same method, with the real people drawn from one age band at a time.
 | no → one child living elsewhere | female | 30-34 | 0.623 | -5.2 (-5.8 to -4.1) stable |
 | no → one child living elsewhere | female | 35-43 | 0.648 | -5.7 (-6.3 to -4.6) stable |
 
-## Strongest pairwise interactions inside CatBoost
-
-CatBoost's own interaction score (how much two features' splits depend on each other; relative units, the scores sum to 100 over all pairs). A pointer for where to look, not an effect size.
-
-| feature 1 | feature 2 | strength |
-|---|---|---|
-| age | earnings | 1.65 |
-| family_income_1997 | mother_educ_grade | 1.45 |
-| family_income_1997 | asvab_percentile | 1.33 |
-| asvab_percentile | mother_educ_grade | 1.2 |
-| education | age | 1.14 |
-| height_cm | asvab_percentile | 1.04 |
-| bmi | asvab_percentile | 1.02 |
-| family_income_1997 | height_cm | 0.98 |
-| race_ethnicity | census_region | 0.97 |
-| race_ethnicity | age | 0.95 |
-| race_ethnicity | asvab_percentile | 0.9 |
-| census_region | bmi | 0.89 |
-
 ## Same person, one thing changed
 
-The typical person: for numbers, the median of train-set people of that sex aged within a year of the stated age; for categories, the most common value. Then one feature is set to 'from' and then 'to'. Probabilities from the final model; change as above.
+The typical person: for numbers, the median of train-set people of that sex aged within a year of the stated age; for categories, the most common value. Then one feature is set to 'from' and then 'to'. Probabilities from the final model; change as above. 'The rest of this person' leaves out what the row changes.
 
 | person | change | probability from → to | change, points | the rest of this person |
 |---|---|---|---|---|
-| male, 30 | earnings $20k → $60k | 0.688 → 0.797 | +10.9 (+9.9 to +11.8) stable | race other, some_college, protestant, south, earns $35,000, 52 weeks, 180 cm, BMI 27.3, attendance 2 |
-| female, 30 | earnings $20k → $60k | 0.760 → 0.776 | +1.6 (+1.8 to +3.2) stable | race other, some_college, protestant, south, earns $27,000, 52 weeks, 163 cm, BMI 27.1, attendance 2 |
-| male, 30 | no job → full-time all year at $40k | 0.547 → 0.763 | +21.6 (+20.1 to +24.5) stable | race other, some_college, protestant, south, earns $35,000, 52 weeks, 180 cm, BMI 27.3, attendance 2 |
-| female, 30 | no job → full-time all year at $40k | 0.820 → 0.761 | -5.9 (-6.0 to -4.3) stable | race other, some_college, protestant, south, earns $27,000, 52 weeks, 163 cm, BMI 27.1, attendance 2 |
-| male, 30 | high school → bachelor's | 0.748 → 0.736 | -1.2 (-3.6 to -0.2) stable | race other, some_college, protestant, south, earns $35,000, 52 weeks, 180 cm, BMI 27.3, attendance 2 |
-| female, 30 | high school → bachelor's | 0.771 → 0.770 | -0.1 (-1.9 to +1.4) small | race other, some_college, protestant, south, earns $27,000, 52 weeks, 163 cm, BMI 27.1, attendance 2 |
-| male, 30 | height 170 → 185 cm | 0.710 → 0.736 | +2.6 (+1.1 to +3.6) stable | race other, some_college, protestant, south, earns $35,000, 52 weeks, 180 cm, BMI 27.3, attendance 2 |
-| female, 30 | BMI 22 → 32 | 0.748 → 0.768 | +2.0 (+0.8 to +3.8) stable | race other, some_college, protestant, south, earns $27,000, 52 weeks, 163 cm, BMI 27.1, attendance 2 |
-| male, 28 | worship never → weekly | 0.688 → 0.743 | +5.4 (+4.0 to +6.7) stable | race other, some_college, protestant, south, earns $30,000, 52 weeks, 180 cm, BMI 27.0, attendance 2 |
-| female, 28 | worship never → weekly | 0.741 → 0.760 | +1.9 (+1.1 to +3.4) stable | race other, some_college, protestant, south, earns $25,000, 51 weeks, 163 cm, BMI 26.5, attendance 2 |
+| male, 30 | earnings $20k → $60k | 0.688 → 0.797 | +10.9 (+9.9 to +11.8) stable | race other, some_college, protestant, south, 52 weeks, 180 cm, BMI 27.3, attendance 2, 0 children living elsewhere |
+| female, 30 | earnings $20k → $60k | 0.760 → 0.776 | +1.6 (+1.8 to +3.2) stable | race other, some_college, protestant, south, 52 weeks, 163 cm, BMI 27.1, attendance 2, 0 children living elsewhere |
+| male, 30 | no job → full-time all year at $40k | 0.547 → 0.763 | +21.6 (+20.1 to +24.5) stable | race other, some_college, protestant, south, 180 cm, BMI 27.3, attendance 2, 0 children living elsewhere |
+| female, 30 | no job → full-time all year at $40k | 0.820 → 0.761 | -5.9 (-6.0 to -4.3) stable | race other, some_college, protestant, south, 163 cm, BMI 27.1, attendance 2, 0 children living elsewhere |
+| male, 30 | high school → bachelor's | 0.748 → 0.736 | -1.2 (-3.6 to -0.2) stable | race other, protestant, south, earns $35,000, 52 weeks, 180 cm, BMI 27.3, attendance 2, 0 children living elsewhere |
+| female, 30 | high school → bachelor's | 0.771 → 0.770 | -0.1 (-1.9 to +1.4) small | race other, protestant, south, earns $27,000, 52 weeks, 163 cm, BMI 27.1, attendance 2, 0 children living elsewhere |
+| male, 30 | height 170 → 185 cm | 0.710 → 0.736 | +2.6 (+1.1 to +3.6) stable | race other, some_college, protestant, south, earns $35,000, 52 weeks, BMI 27.3, attendance 2, 0 children living elsewhere |
+| female, 30 | BMI 22 → 32 | 0.748 → 0.768 | +2.0 (+0.8 to +3.8) stable | race other, some_college, protestant, south, earns $27,000, 52 weeks, 163 cm, attendance 2, 0 children living elsewhere |
+| male, 28 | worship never → weekly | 0.688 → 0.743 | +5.4 (+4.0 to +6.7) stable | race other, some_college, protestant, south, earns $30,000, 52 weeks, 180 cm, BMI 27.0, 0 children living elsewhere |
+| female, 28 | worship never → weekly | 0.741 → 0.760 | +1.9 (+1.1 to +3.4) stable | race other, some_college, protestant, south, earns $25,000, 51 weeks, 163 cm, BMI 26.5, 0 children living elsewhere |
 | male, 30 | no → one child living elsewhere | 0.736 → 0.673 | -6.3 (-7.8 to -4.4) stable | race other, some_college, protestant, south, earns $35,000, 52 weeks, 180 cm, BMI 27.3, attendance 2 |
 | female, 30 | no → one child living elsewhere | 0.763 → 0.698 | -6.5 (-6.8 to -4.6) stable | race other, some_college, protestant, south, earns $27,000, 52 weeks, 163 cm, BMI 27.1, attendance 2 |
