@@ -121,8 +121,8 @@ On a 1-7 scale, going from 3 to 6:
 - For a typical 28-year-old man: 69% → 74%.
 - Protestants have a slightly higher chance than every other group: **+1.5 to +2 pp** (stable,
   except "other religion" for women).
-- How important faith is to someone: under 1 pp (small). It's the going that counts, not the
-  believing.
+- How important faith is to someone: under 1 pp (small). Attendance goes with partnership;
+  belief alone does not.
 - **Direction:** both ways. Religious communities encourage marriage and introduce people, and
   couples (especially with children) start going to church again.
 
@@ -215,7 +215,7 @@ and child rows are most likely the partner causing the fact, not the other way r
 
 - **Time is on your side until about 30.** Most of the rise happens between 20 and 30. Being
   single at 25 is ordinary; at 25-29 about half of men and just over half of women are partnered.
-- **Men: a steady job matters more than anything else you can change.** Going from no work to a
+- **Men: work is the strongest factor within your control.** Going from no work to a
   full-time job goes with about +22 pp at every age; higher pay adds more, and most of the pay
   effect comes before about $45k. For women, earnings and work matter much less.
 - **College puts partnering later, not off.** Graduates are behind in their twenties and ahead by
@@ -224,7 +224,7 @@ and child rows are most likely the partner causing the fact, not the other way r
   by similar amounts (about +3 to +5 pp each). These are also things people can practise.
 - **Community helps.** Weekly worship goes with +4 to +6 pp for men over 25. The likely lesson is
   broader than religion: regular groups where you meet the same people week after week.
-- **Looks matter less than the internet says.** Height goes with about +1 pp for men across the
+- **Height and weight matter little.** Height goes with about +1 pp for men across the
   normal range; weight looks positive but that is marriage changing weight, not weight
   attracting a partner.
 - **Where you live changes the numbers you see around you.** City centres and the Northeast have
