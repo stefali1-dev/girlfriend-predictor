@@ -76,6 +76,8 @@ def test_split_time_keeps_rounds_and_people_disjoint():
         ("P3", 2, 2000, 24, 0, 50), ("P3", 10, 2006, 30, 0, 50),
         ("P4", 18, 2017, 35, 0, 50), ("P4", 20, 2021, 39, 0, 50),
     ])
-    train, test = split_time(base)
+    train, test, unused = split_time(base)
     assert (train["round"] < TEST_ROUND).all() and (test["round"] >= TEST_ROUND).all()
     assert not set(train.person_id) & set(test.person_id)
+    # every row lands in exactly one of train, test or an unused bucket
+    assert len(train) + len(test) + sum(len(v) for v in unused.values()) == len(base)
