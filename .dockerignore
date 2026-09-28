@@ -1,0 +1,9 @@
+*
+!requirements.txt
+!src/predict.py
+!sagemaker/form.py
+!sagemaker/serve.py
+!models/partnered.joblib
+!models/typical.json
+# CDK stages the build context through this file; without this line the Dockerfile is missing.
+!sagemaker/Dockerfile

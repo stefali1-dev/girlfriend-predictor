@@ -1,6 +1,7 @@
 PYTHON ?= .venv/bin/python
+CDK = cd infra && BUILDX_NO_DEFAULT_ATTESTATIONS=1 npx aws-cdk@2.1143.0
 
-.PHONY: data all test
+.PHONY: data all test bootstrap deploy destroy
 
 data:
 	$(PYTHON) src/get_nhanes.py
@@ -17,6 +18,18 @@ all:
 	$(PYTHON) src/explain.py
 	$(PYTHON) src/forecast.py
 	$(PYTHON) src/outside_check.py
+	$(PYTHON) sagemaker/typical.py
 
 test:
 	$(PYTHON) -m pytest -q tests
+
+# The hosted model for the web page (infra/app.py). Needs infra/.venv with infra/requirements.txt.
+bootstrap:
+	$(CDK) bootstrap
+
+deploy:
+	$(CDK) diff
+	$(CDK) deploy
+
+destroy:
+	$(CDK) destroy

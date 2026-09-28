@@ -1,5 +1,7 @@
 # girlfriend-predictor
 
+**Try it:** [girlfriend-predictor.vercel.app](https://girlfriend-predictor.vercel.app). Answer a few questions and see how often people like you lived with a partner.
+
 Predicts the chance that an adult has a partner (married or living together) from facts about
 them: age, sex, education, work, earnings, height, personality, family background. Despite the
 name it covers men and women and any live-in partner. It is trained on a US survey that followed
@@ -87,6 +89,29 @@ Predict one person (every field except `age` may be left out):
 
     echo '{"age": 29, "sex": "male", "education": "bachelor_plus", "earnings": 55000}' | .venv/bin/python src/predict.py
 
+## Web page
+
+`web/` is a one-page site on Vercel: a short form, the person's number, and what the model
+leaned on. Its one function, `web/api/predict.js`, passes the answers to a SageMaker Serverless
+endpoint (`sagemaker/`: a small HTTP server around the same model). It signs in to AWS through
+Vercel's OIDC, so no AWS keys are stored. Nothing anyone types is stored or logged.
+
+- **Skipped answers get typical values** for the person's sex and age (`sagemaker/typical.py`).
+  CatBoost reads a blank number as "below everyone". On the test set, skipping height alone
+  lowered the number by 5.5 points on average; leaving blank what the form never asks put the
+  average at 69% against a true 59%, and typical values put it at 57%.
+- **"What the model leaned on"** is CatBoost's SHAP values for the answers given, in words.
+  The calibration step is linear in log-odds, so they add up exactly to the number shown.
+
+Deploy (AWS CDK in Python, `infra/app.py`, eu-west-1):
+
+    python3 -m venv infra/.venv && infra/.venv/bin/pip install -r infra/requirements.txt
+    BUDGET_EMAIL=you@example.com make bootstrap # once per account and region
+    BUDGET_EMAIL=you@example.com make deploy    # image, endpoint, roles, $10 budget alert
+
+The page deploys on every push to `main`: the Vercel project builds from `web/` and needs
+`AWS_ROLE_ARN`, `AWS_REGION` and `SAGEMAKER_ENDPOINT` set. To run it locally, start the image on port 8080 (`sagemaker/Dockerfile`) and `vercel dev` in `web/`.
+
 ## Limits
 
 - One US generation (born 1980-84), ages 18-43. The results may not hold for other generations or countries.
@@ -103,5 +128,6 @@ Predict one person (every field except `age` may be left out):
   - [`forecast.md`](results/forecast.md): finding a partner within 2 years.
   - [`outside_check.md`](results/outside_check.md): do the findings hold in other surveys?
   - [`explain_numbers.md`](results/explain_numbers.md): every number behind the insights.
-- `tests/`: pytest checks for prediction, the forecast rows and the outside check.
+- `sagemaker/`, `infra/`, `web/`: the model server, its AWS setup, and the web page.
+- `tests/`: pytest checks for prediction, the web form's model code, the forecast rows and the outside check.
 - `notebooks/explore.ipynb`: first look at the data.

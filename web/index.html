@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Girlfriend Predictor</title>
+  <meta name="description" content="How often people like you live with a partner, from a model trained on 9,000 Americans followed from 1997 to 2023.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💞</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Girlfriend Predictor</h1>
+      <p class="subtitle">…and boyfriends, husbands, wives.</p>
+      <p class="intro">A model trained on 9,000 Americans followed from 1997 to 2023. Tell it a
+        little about yourself and see how often people like you lived with a partner.</p>
+    </header>
+
+    <form id="form" novalidate>
+      <div id="basics" class="fields"></div>
+
+      <details id="more">
+        <summary><span>More questions</span> <span class="muted">optional, sharpens the number</span></summary>
+        <div class="more-body">
+          <div class="units" role="group" aria-label="Units">
+            <button type="button" data-units="metric" aria-pressed="true">cm · kg</button>
+            <button type="button" data-units="imperial" aria-pressed="false">ft · lb</button>
+          </div>
+          <div id="extra" class="fields"></div>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button type="submit" id="show">Show my number</button>
+        <p class="muted small">Nothing you enter is stored.</p>
+      </div>
+    </form>
+
+    <section id="result" hidden aria-live="polite">
+      <div class="score">
+        <svg viewBox="0 0 160 160" aria-hidden="true">
+          <circle class="track" cx="80" cy="80" r="70"></circle>
+          <circle class="fill" cx="80" cy="80" r="70"></circle>
+        </svg>
+        <div class="number"><span id="percent">–</span><small>%</small></div>
+      </div>
+      <p class="sentence" id="sentence"></p>
+      <p class="muted small" id="status"></p>
+
+      <div id="leaned" hidden>
+        <h2>What the model leaned on</h2>
+        <p class="muted small">Compared with the average person in the survey (<span id="average"></span>).
+          A pattern in the data, not advice.</p>
+        <ul id="rows"></ul>
+      </div>
+      <p class="muted small" id="assumed"></p>
+
+      <ul class="caveats small">
+        <li>Everyone in the survey is an American born 1980–84.</li>
+        <li>“Partner” means married or living together.</li>
+        <li>The model is right about groups far more often than about one person.</li>
+      </ul>
+    </section>
+
+    <section class="findings">
+      <h2>What the data shows</h2>
+      <p class="muted small">In points: going from 40% to 45% is +5 points. Each finding compares
+        people who are otherwise alike.</p>
+      <ol>
+        <li><strong>Age matters most.</strong> The chance rises steeply until about 30, then levels
+          off. Being single at 25 is ordinary: about half of 25–29-year-olds are.</li>
+        <li><strong>For men, work matters most.</strong> Going from no job to a full-time job goes
+          with about +22 points, at every age. For women after 25 it goes slightly the other way.</li>
+        <li><strong>Pay matters more for men.</strong> From $20k to $60k a year: +11 points for men,
+          +3.5 for women. Part of this runs backwards: having a partner raises earnings.</li>
+        <li><strong>College delays partnering rather than preventing it.</strong> Graduates are
+          behind in their twenties and ahead by their late thirties.</li>
+        <li><strong>Personality counts a little.</strong> Outgoing, organised and calm people are
+          partnered more often: about +3 to +5 points each, for men and women alike.</li>
+        <li><strong>Height and weight matter little.</strong> 170 → 185 cm goes with about +1 point
+          for men. Heavier people are partnered more often, but mostly because weight goes up
+          after settling down.</li>
+      </ol>
+    </section>
+
+    <section class="limits">
+      <h2>What it can’t tell you</h2>
+      <ul>
+        <li><strong>What causes what.</strong> These are patterns, not proven effects.</li>
+        <li><strong>Partners you don’t live with.</strong> They count as single here.</li>
+        <li><strong>Other generations or countries.</strong> Younger people partner later and meet differently.</li>
+        <li><strong>You.</strong> A 70% means 3 in 10 people like you were single.</li>
+      </ul>
+    </section>
+
+    <footer class="small muted">
+      <p>Built from three public surveys: NLSY97, NHANES and HCMST 2017.
+        Method and code on <a href="https://github.com/stefali1-dev/girlfriend-predictor">GitHub</a> (MIT).</p>
+    </footer>
+  </main>
+
+  <button id="peek" type="button" hidden>Your number: <strong id="peek-value"></strong></button>
+
+  <script src="app.js"></script>
+</body>
+</html>

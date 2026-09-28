@@ -4,3 +4,5 @@ models/
 __pycache__/
 .ipynb_checkpoints/
 agent-docs
+node_modules/
+cdk.out/

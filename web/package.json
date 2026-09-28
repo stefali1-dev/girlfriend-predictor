@@ -1,0 +1,9 @@
+{
+  "name": "girlfriend-predictor-web",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-sagemaker-runtime": "^3.1142.0",
+    "@vercel/oidc-aws-credentials-provider": "^3.3.9"
+  }
+}
