@@ -8,7 +8,33 @@ import pandas as pd
 from scipy.special import expit, logit
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from outside_check import TARGET, any_partner_table, direction, points, value_groups  # noqa: E402
+from outside_check import (TARGET, any_partner_table, direction, full_model_reference,  # noqa: E402
+                           points, transported, value_groups)
+
+
+class StubModel:
+    """Stands in for a fitted pipeline: predict_proba returns one constant."""
+
+    def __init__(self, value):
+        self.value = value
+
+    def predict_proba(self, X):
+        v = np.full(len(X), self.value)
+        return np.column_stack([1 - v, v])
+
+
+def test_transportled_scores_missing_rows_with_the_five_feature_model():
+    frame = pd.DataFrame({
+        "age": [30, 30, 30], "sex": ["male"] * 3, "race_ethnicity": ["other"] * 3,
+        "education": ["hs"] * 3, "employed": [1.0] * 3,
+        "height_cm": [180.0, np.nan, np.nan], "bmi": [24.0, 25.0, np.nan],
+    })
+    seven, five = StubModel(0.8), StubModel(0.4)
+    # both measured -> seven features; either one missing -> five features
+    assert transported(seven, five, frame).tolist() == [0.8, 0.4, 0.4]
+    # HCMST's situation: nothing measured, the seven-feature model is never called
+    all_missing = frame.assign(height_cm=np.nan, bmi=np.nan)
+    assert transported(seven, five, all_missing).tolist() == [0.4, 0.4, 0.4]
 
 
 def test_value_groups_use_comparable_bins():
@@ -45,6 +71,11 @@ def test_direction_reports_extremes_and_skips_unmeasured_features():
 
     empty = pd.Series(np.nan, index=range(3), name="height_cm")  # HCMST's situation
     assert direction(pd.Series(0.0, index=range(3)), empty, 0.5) == "not measured in this survey"
+
+
+def test_full_model_reference_reads_the_committed_metrics():
+    log_loss, auc = full_model_reference()
+    assert 0 < log_loss < 1 and 0.5 < auc < 1
 
 
 def test_any_partner_table_counts_only_the_not_partnered():
